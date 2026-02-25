@@ -10,7 +10,7 @@ class Conversation(models.Model):
         ('resolved','Resolved')
     ]
     user = models.ForeignKey(User, on_delete=models.CASCADE,related_name="conversation")
-    title = models.CharField(max_length=20)
+    title = models.CharField(max_length=64)
     status = models.CharField(choices=STATUS_CHOICES, default='active', max_length=10)
 
     created_at = models.DateTimeField(auto_now_add=True)

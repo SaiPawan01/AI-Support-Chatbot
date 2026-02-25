@@ -15,3 +15,17 @@ export const getBotReply = (userMessage) => {
         });
     }
 };
+
+
+export const createConversation = (data) => {
+    const token = localStorage.getItem('access_token')
+    if(token){
+        return api.post("api/chatbot/create/conversation",{
+            title: data.title,
+        },{
+            headers :{
+                Authorization: `Bearer ${token}`
+            }
+        });
+    }
+}

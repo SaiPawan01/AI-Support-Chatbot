@@ -15,6 +15,8 @@ from dotenv import load_dotenv
 import os
 from datetime import timedelta
 
+import dj_database_url
+
 
 load_dotenv()
 
@@ -118,6 +120,15 @@ DATABASES = {
         'PORT': 5432,
     }
 }
+
+
+# DATABASES = {
+#     "default": dj_database_url.config(
+#         default=os.getenv("DB_URI"),
+#         conn_max_age=600,
+#         ssl_require=True
+#     )
+# }
 
 
 # Password validation

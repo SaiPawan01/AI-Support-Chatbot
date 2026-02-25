@@ -19,7 +19,9 @@ export default function ChatbotInterface() {
       timestamp: new Date()
     }
   ]);
+  const [conversations, setConversations] = useState([]);
   const [inputValue, setInputValue] = useState('');
+  const [newConversation, setNewConversation] = useState(false);
   const [loading, setLoading] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [showSettings, setShowSettings] = useState(false);
@@ -32,9 +34,7 @@ export default function ChatbotInterface() {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
 
-  useEffect(() => {
-    scrollToBottom();
-  }, [messages]);
+  
 
 
   const fetchMessages = async (id) => {
@@ -80,9 +80,8 @@ export default function ChatbotInterface() {
     }catch(error){
       console.log("error occured while geting bot reply"+ error)
     }
-    
-  };
 
+  };
 
 
   const handleFeedback = (messageId, isPositive) => {
@@ -105,12 +104,17 @@ export default function ChatbotInterface() {
     return 'text-red-400';
   };
 
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages]);
+
   
 
   return (
     <div className="flex h-screen bg-slate-900">
       {/* Sidebar */}
-      <SidebarWindow setMessages={setMessages} setFeedbackGiven={setFeedbackGiven} sidebarOpen={sidebarOpen} fetchMessages={fetchMessages} activeConversation={activeConversation} setActiveConversation={setActiveConversation} />
+      <SidebarWindow sidebarOpen={sidebarOpen} fetchMessages={fetchMessages} activeConversation={activeConversation} setActiveConversation={setActiveConversation} setNewConversation={setNewConversation} conversations={conversations} setConversations={setConversations} />
 
       {/* Main Chat Area */}
       <div className="flex-1 flex flex-col">
@@ -118,7 +122,7 @@ export default function ChatbotInterface() {
         <BotHeader setShowSettings={setShowSettings} setSidebarOpen={setSidebarOpen} sidebarOpen={sidebarOpen} showSetting={showSettings} />
 
         {/* Messages Area */}
-        <MessageArea messages={messages} loading={loading} messagesEndRef={messagesEndRef} handleFeedback={handleFeedback} feedbackGiven={feedbackGiven} handleCopyMessage={handleCopyMessage} getConfidenceColor={getConfidenceColor} />
+        <MessageArea messages={messages} loading={loading} messagesEndRef={messagesEndRef} handleFeedback={handleFeedback} feedbackGiven={feedbackGiven} handleCopyMessage={handleCopyMessage} getConfidenceColor={getConfidenceColor} newConversation={newConversation} setConversations={setConversations} setNewConversation={setNewConversation} setActiveConversation={setActiveConversation} />
 
         {/* Input Area */}
         <BotInput handleSendMessage={handleSendMessage} inputValue={inputValue} setInputValue={setInputValue} loading={loading} />

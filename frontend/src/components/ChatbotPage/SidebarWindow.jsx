@@ -6,26 +6,23 @@ import { useNavigate } from "react-router-dom";
 import { logoutUser } from '../../api/auth.api.js'
 import { fetchALLConversations } from "../../api/sidebar.api.js";
 
-function SidebarWindow({setMessages, setFeedbackGiven, sidebarOpen, fetchMessages, activeConversation, setActiveConversation}) {
+function SidebarWindow({sidebarOpen, fetchMessages, activeConversation, setActiveConversation, setNewConversation, conversations, setConversations}) {
     const navigate = useNavigate();
 
-    
-    const [conversations, setConversations] = useState([]);
-    
+//     const startNewChat = () => {
+//     setMessages([
+//       {
+//         id: 1,
+//         text: "Hello! I'm SupportBot AI. How can I help you today?",
+//         sender: 'bot',
+//         timestamp: new Date(),
+//         confidence: null,
+//         sources: []
+//       }
+//     ]);
+//     setFeedbackGiven({});
+//   };
 
-    const startNewChat = () => {
-    setMessages([
-      {
-        id: 1,
-        text: "Hello! I'm SupportBot AI. How can I help you today?",
-        sender: 'bot',
-        timestamp: new Date(),
-        confidence: null,
-        sources: []
-      }
-    ]);
-    setFeedbackGiven({});
-  };
 
     const handleLogout = async () => {
         try {
@@ -66,7 +63,7 @@ function SidebarWindow({setMessages, setFeedbackGiven, sidebarOpen, fetchMessage
 
             {/* New Chat Button */}
             <button
-                onClick={startNewChat}
+                onClick={()=>setNewConversation(true)}
                 className="m-4 bg-blue-600 hover:bg-blue-700 text-white rounded-lg py-2 px-4 flex items-center justify-center gap-2 transition"
             >
                 <Plus className="w-5 h-5" />
@@ -93,6 +90,7 @@ function SidebarWindow({setMessages, setFeedbackGiven, sidebarOpen, fetchMessage
                         key={conv.id}
                         onClick={() =>{ 
                             setActiveConversation(conv.id),
+                            setNewConversation(false);
                             fetchMessages(conv.id);
                         }}
                         className={`w-full text-left px-4 py-3 rounded-lg mb-2 transition ${activeConversation === conv.id

@@ -1,17 +1,66 @@
 import React from 'react'
 import { Paperclip, FileText, ThumbsUp, ThumbsDown, Copy } from 'lucide-react'
-
+import { createConversation } from '../../api/bot.api';
 function MessageArea({ messages,
     loading,
     messagesEndRef,
     handleFeedback,
     feedbackGiven,
     handleCopyMessage,
-    getConfidenceColor }) {
+    getConfidenceColor,
+    newConversation,
+    setNewConversation,
+    setConversations,
+    setActiveConversation }) {
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+
+        const data = {
+            title : e.target.title.value.trim()
+        }
+
+        try{
+            const response = await createConversation(data);
+            if(response.data && response.data.data){
+                setConversations(prev => [response.data.data,...prev])
+                setActiveConversation(response.data.data.id)
+                setNewConversation(false)
+            }
+        }
+        catch(error){
+            console.log("FULL ERROR:", error.response?.data);
+        }
+    }
 
     return <>
         <div className="flex-1 overflow-y-auto px-6 py-6 space-y-6">
-            {(messages || []).map((message, idx) => (
+            {newConversation ? (<div className="flex justify-center items-center h-full">
+    <div className="w-full max-w-xl bg-slate-700 rounded-3xl px-6 py-6 space-y-4 shadow-lg">
+      <p className="text-slate-300 text-sm">
+        Start a new conversation
+      </p>
+
+      <form
+        onSubmit={handleSubmit}
+        className="flex gap-3"
+      >
+        <input
+          type="text"
+          name="title"
+          placeholder="Enter conversation title..."
+          className="flex-1 bg-slate-600 text-slate-100 placeholder-slate-400 rounded-2xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+        />
+
+        <button
+          type="submit"
+          className="bg-blue-600 hover:bg-blue-500 text-white px-5 py-3 rounded-2xl text-sm font-medium transition"
+        >
+          Send
+        </button>
+      </form>
+    </div>
+  </div>) : (messages || []).map((message, idx) => (
                 <div
                     key={message.id}
                     className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
@@ -65,7 +114,7 @@ function MessageArea({ messages,
                             )}
 
                         {/* Feedback & Actions (Bot only) */}
-                        {message.sender === 'bot' && idx > 0 && (
+                        {message.sender === 'assistant' && idx > 0 && (
                             <div className="flex items-center gap-2 pt-2 border-t border-slate-600">
                                 <button
                                     onClick={() => handleFeedback(message.id, true)}
