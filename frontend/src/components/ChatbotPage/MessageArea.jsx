@@ -177,9 +177,11 @@ function MessageArea({ messages,
 
                         {/* Timestamp */}
                         <p className="text-xs text-slate-400 pt-1">
-                            {new Date(message.timestamp).toLocaleTimeString([], {
+                            {new Date(message.created_at).toLocaleTimeString([], {
                                 hour: '2-digit',
-                                minute: '2-digit'
+                                minute: '2-digit',
+                                month: '2-digit',
+                                day: '2-digit'
                             })}
                         </p>
                     </div>

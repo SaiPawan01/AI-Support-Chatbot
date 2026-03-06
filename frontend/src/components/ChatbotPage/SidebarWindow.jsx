@@ -24,8 +24,12 @@ function SidebarWindow({sidebarOpen, fetchMessages, activeConversation, setActiv
     const fetchConversations = async ()=>{
        try{
          const response = await fetchALLConversations();
+         console.log(response)
          if(response.data && response.data.data){
             setConversations(response.data.data)
+         }
+         else{
+            console.log("no data field")
          }
        }
        catch(error){
@@ -33,7 +37,9 @@ function SidebarWindow({sidebarOpen, fetchMessages, activeConversation, setActiv
        }
     }
 
-    useEffect(() => fetchConversations,[]);
+    useEffect(() => {
+        fetchConversations()
+    }, []);
 
     return <>
         <div

@@ -58,7 +58,8 @@ export default function ChatbotInterface() {
       id: uuidv4(),
       role: 'user',
       content: inputValue,
-      conversation_id: activeConversation
+      conversation_id: activeConversation,
+      created_at: new Date().toLocaleString()
     } 
 
     setMessages(prev => [...prev, userMessage]);
@@ -67,11 +68,12 @@ export default function ChatbotInterface() {
     try{
       const response = await getBotReply(userMessage)
       console.log(response)
-      if(response.data && response.data.result){
+      if(response.data && response.data.data){
         const botReply = {
-          id: uuidv4(),
+          id: response.data.data.id,
           role:'assistant',
-          content: response.data.result,
+          content: response.data.data.message,
+          created_at: response.data.data.created_at
         }
         setMessages(prev => [...prev, botReply])
         setLoading(false);

@@ -185,16 +185,22 @@ class CreateMessageView(APIView):
                 )
 
 
-                Message.objects.create(
+                msg = Message.objects.create(
                     conversation=conversation,
                     sender="assistant",
                     message=bot_reply,
                 )
+                
 
             return Response(
                 {
                     "success": True,
-                    "result": bot_reply
+                    "data": {
+                        "id" : msg.id,
+                        "message": msg.message,
+                        "created_at" : msg.created_at,
+                    }
+
                 },
                 status=status.HTTP_200_OK
             )
