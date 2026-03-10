@@ -6,7 +6,7 @@ from documents.utils.document_processing import get_pinecone_instance
 from dotenv import load_dotenv
 import os
 from langchain_google_genai import GoogleGenerativeAIEmbeddings
-from langchain.messages import HumanMessage
+from langchain.messages import HumanMessage, SystemMessage
 
 load_dotenv()
 
@@ -41,16 +41,18 @@ def get_relevant_chunks(query):
         vector=vector,
         top_k=3,
         include_metadata=True,
-        include_values=True,
         namespace=""
     )
     context = []
     if results.matches:
         for match in results.matches:
-            context.append({
-                'content' : match.metadata.get("chunk_content", ""),
-                'metadata': match.metadata
-            })
+            if match.score >= float(0.5):
+                print(match)
+                context.append({
+                    'content' : match.metadata.get("chunk_content", ""),
+                    'metadata': match.metadata,
+                    'score': match.score
+                })
     return context
 
 def get_bot_reply(user_query, context, history):

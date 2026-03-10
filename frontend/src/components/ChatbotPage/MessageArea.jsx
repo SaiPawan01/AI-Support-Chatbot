@@ -103,16 +103,16 @@ function MessageArea({ messages,
 
                         {/* Confidence Score & Sources (Bot only) */}
                         {message.role === 'assistant' &&
-                            // message.confidence !== null &&
-                            // message.confidence !== undefined && 
+                            message.confidence !== null &&
+                            message.confidence !== undefined && 
                             (
                                 <div className="space-y-2 pt-2 border-t border-slate-600">
-                                    {/* <div className="flex items-center gap-2">
+                                    <div className="flex items-center gap-2">
                                         <span className="text-xs text-slate-400">Confidence:</span>
                                         <span className={`text-xs font-semibold ${getConfidenceColor(message.confidence)}`}>
                                             {(message.confidence * 100).toFixed(0)}%
                                         </span>
-                                    </div> */}
+                                    </div>
 
                                     {/* Sources */}
                                     {(message.source && message.source.length) > 0 && (

@@ -36,6 +36,7 @@ export default function ChatbotInterface() {
   const fetchMessages = async (id) => {
     try {
       const response = await fetchALLMessages(id);
+      console.log(response)
       if (response.data && response.data.data) {
         setMessages(response.data.data)
       }
@@ -71,6 +72,7 @@ export default function ChatbotInterface() {
           content: response.data.data.message,
           created_at: response.data.data.created_at,
           source: response.data.data.source,
+          confidence: response.data.data.confidence,
         }
         setMessages(prev => [...prev, botReply])
         setLoading(false);
@@ -87,8 +89,8 @@ export default function ChatbotInterface() {
   
 
   const getConfidenceColor = (confidence) => {
-    if (confidence >= 0.9) return 'text-green-400';
-    if (confidence >= 0.7) return 'text-yellow-400';
+    if (confidence >= 0.7) return 'text-green-400';
+    if (confidence >= 0.5) return 'text-yellow-400';
     return 'text-red-400';
   };
 

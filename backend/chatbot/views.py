@@ -203,14 +203,19 @@ class CreateMessageView(APIView):
                         "Unable to generate LLM response.",
                         error=e
                     )
-
+                
+                confidence_score = sum([float(match['score']) for match in context])/len(context)
                 # Save assistant reply
                 msg = Message.objects.create(
                     conversation=conversation,
                     sender="assistant",
                     message=bot_reply,
-                    source=source
+                    source=source,
+                    confidence_score= confidence_score
                 )
+
+                
+
 
             return Response(
                 {
@@ -219,7 +224,8 @@ class CreateMessageView(APIView):
                         "id": msg.id,
                         "message": msg.message,
                         "created_at": msg.created_at,
-                        "source": source
+                        "source": source,
+                        "confidence": confidence_score
                     }
                 },
                 status=status.HTTP_200_OK
@@ -291,7 +297,9 @@ class FetchAllMessage(APIView):
                     'id': msg.id,
                     "role": msg.sender,
                     "content": msg.message,
-                    "created_at": msg.created_at
+                    "created_at": msg.created_at,
+                    "source": msg.source,
+                    "confidence": msg.confidence_score,
                 }
                 for msg in messages
             ]
