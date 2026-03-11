@@ -13,8 +13,8 @@ function Navbar(){
               <span className="text-xl font-bold text-white">SupportBot AI</span>
             </div>
             <div className="hidden md:flex gap-8">
-              <a href="#features" className="text-slate-300 hover:text-white transition">Features</a>
               <a href="#benefits" className="text-slate-300 hover:text-white transition">Benefits</a>
+              <a href="#features" className="text-slate-300 hover:text-white transition">Features</a>
               <a href="#pricing" className="text-slate-300 hover:text-white transition">Pricing</a>
             </div>
             <Link to='/login' className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg transition">
