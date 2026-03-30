@@ -1,3 +1,6 @@
+import email
+import os
+
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
@@ -7,8 +10,13 @@ from django.contrib.auth import authenticate
 from rest_framework_simplejwt.exceptions import TokenError
 
 from rest_framework_simplejwt.tokens import RefreshToken
-from .serializers import UserSerializer, LoginSerializer
 
+from .serializers import UserSerializer, LoginSerializer
+import random
+from .utils.otp_email_service import send_otp
+from .utils.redis_cache import store_otp, verify_otp
+
+from .models import User
 
 
 # Create your views here.
@@ -62,22 +70,15 @@ class LoginView(APIView):
     def post(self, request):
         serializer = LoginSerializer(data=request.data)
 
-        # validate and raise exceptions handled by DRF
-        serializer.is_valid(raise_exception=True)
-
-        user = authenticate(
-            request,
-            username=serializer.validated_data.get('email'),
-            password=serializer.validated_data.get('password')
-        )
-
-        if user is None:
+        try:
+             serializer.is_valid(raise_exception=True)
+             user = serializer.validated_data["user"]
+        except Exception as e:
             return Response(
-                {"success":False,
-                 "message": "Invalid email or password"},
+                {"success": False, "message": "Invalid email or password", "error": str(e)},
                 status=status.HTTP_401_UNAUTHORIZED,
             )
-
+       
         refresh = RefreshToken.for_user(user)
 
         response = Response(
@@ -154,3 +155,97 @@ class LogoutView(APIView):
         response.delete_cookie("refresh_token", path="/")
         return response
 
+
+
+class EmailVerificationView(APIView):
+    def post(self, request):
+        try:
+            email = request.data.get('email')
+            print(email, type(email))
+
+            if not email:
+                return Response(
+                    {"success": False, "message": "Email is required"},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+
+            user_exists = User.objects.filter(email=email).exists()
+
+            if user_exists:
+                return Response(
+                    {"success": False, "message": "Email already registered"},
+                    status=status.HTTP_400_BAD_REQUEST
+                    )
+
+
+            otp = random.randint(100000, 999999)
+
+            success, error = send_otp(email, otp)
+
+            if success:
+                store_otp(email, otp)
+                return Response(
+                    {
+                        "success": True,
+                        "message": f"OTP sent to {email}"
+                    },
+                    status=status.HTTP_200_OK
+                )
+
+            return Response(
+                {
+                    "success": False,
+                    "message": "Failed to send OTP",
+                    "error": error
+                },
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
+
+        except Exception as e:
+            return Response(
+                {
+                    "success": False,
+                    "message": "Internal server error",
+                    "error": str(e)
+                },
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
+        
+
+class OTPVerificationView(APIView):
+    def post(self, request):
+        try:
+            email = request.data.get('email')
+            otp = request.data.get('otp')
+
+            print("email is :" , email, type(email))
+            print("otp is :" , otp, type(otp))
+
+            if not email or not otp:
+                return Response(
+                    {"success": False, "message": "Email and OTP are required"},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+
+            is_valid, error_message = verify_otp(email, otp)
+
+            if not is_valid:
+                return Response(
+                    {"success": False, "message": error_message},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+
+            
+            return Response(
+                {"success": True, "message": "OTP verified successfully"},
+                status=status.HTTP_200_OK
+            )
+        except Exception as e:
+            return Response(
+                {
+                    "success": False,
+                    "message": "Internal server error",
+                    "error": str(e)
+                },
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )

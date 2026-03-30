@@ -29,3 +29,14 @@ export const logoutUser = () => {
         withCredentials: true
     });
 }
+
+
+export const sendOtp = (email) => {
+    console.log(email, typeof email)
+    return api.post("api/send-otp/", { email });
+}
+
+
+export const verifyOtp = (email, otp) => {
+    return api.post("api/verify-otp/", { email, otp });
+}
