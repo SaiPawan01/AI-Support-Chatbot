@@ -5,6 +5,7 @@ import Oauth from '../components/AuthPage/Oauth.jsx';
 import Form from '../components/AuthPage/Form.jsx';
 
 export default function LoginPage() {
+
   const [isLogin, setIsLogin] = useState(true);
   const [formData, setFormData] = useState({
     email: '',
@@ -17,6 +18,8 @@ export default function LoginPage() {
   });
   const [errors, setErrors] = useState({});
 
+
+  // Toggle between Login and Signup modes
   const toggleAuthMode = () => {
     setIsLogin(!isLogin);
     setErrors({});
@@ -60,16 +63,16 @@ export default function LoginPage() {
           />
 
           {/* Divider */}
-          <div className="relative my-6">
+          {/* <div className="relative my-6">
             <div className="absolute inset-0 flex items-center">
               <div className="w-full border-t border-slate-600"></div>
             </div>
             <div className="relative flex justify-center text-sm">
               <span className="px-2 bg-slate-800/50 text-slate-400">Or continue with</span>
             </div>
-          </div>
+          </div> */}
 
-          <Oauth />
+          {/* <Oauth /> */}
 
           {/* Toggle Message */}
           <p className="text-center text-slate-400 text-sm mt-6">

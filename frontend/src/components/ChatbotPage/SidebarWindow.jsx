@@ -1,14 +1,17 @@
 import React, { useEffect } from "react";
-import { useState } from "react";
+import { useState, useContext } from "react";
 import {Plus, MessageCircle, LogOut, Search, Settings} from 'lucide-react'
 import { useNavigate } from "react-router-dom";
 
 import { logoutUser } from '../../api/auth.api.js'
 import { fetchALLConversations } from "../../api/sidebar.api.js";
 
-function SidebarWindow({sidebarOpen, fetchMessages, activeConversation, setActiveConversation, setNewConversation, conversations, setConversations, setEscalationStatus}) {
-    const navigate = useNavigate();
+import { ChatbotContext } from "../../context/ChatbotContext.jsx";
 
+function SidebarWindow() {
+    const { fetchMessages, activeConversation, setActiveConversation, setNewConversation, conversations, setConversations, setEscalationStatus} = useContext(ChatbotContext);
+
+    const navigate = useNavigate();
     const handleLogout = async () => {
         try {
             const response = await logoutUser();
@@ -43,8 +46,7 @@ function SidebarWindow({sidebarOpen, fetchMessages, activeConversation, setActiv
 
     return <>
         <div
-            className={`${sidebarOpen ? 'w-64' : 'w-0'
-                } bg-slate-800 border-r border-slate-700 transition-all duration-300 overflow-hidden flex flex-col`}
+            className={"w-64 bg-slate-800 border-r border-slate-700 transition-all duration-300 overflow-hidden flex flex-col"}
         >
             {/* Logo */}
             <div className="p-4 border-b border-slate-700 flex items-center gap-2">

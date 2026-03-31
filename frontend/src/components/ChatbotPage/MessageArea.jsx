@@ -1,22 +1,22 @@
-import React from 'react'
+import React, {useContext} from 'react'
 import { Paperclip, FileText, ThumbsUp, ThumbsDown, Copy } from 'lucide-react'
 import { createConversation } from '../../api/bot.api';
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
+import { ChatbotContext } from '../../context/ChatbotContext';
 
-
-function MessageArea({ messages,
+function MessageArea() {
+    const { messages,
     setMessages,
     loading,
     messagesEndRef,
-    getConfidenceColor,
     newConversation,
     setNewConversation,
     setConversations,
     setActiveConversation,
     activeConversation,
     escalationStatus,
-}) {
+} = useContext(ChatbotContext);
 
 
     const handleSubmit = async (e) => {
@@ -59,6 +59,13 @@ function MessageArea({ messages,
         );
     }
 
+    // Determine the text color based on the confidence level of the bot's response: green for high confidence, yellow for medium confidence, and red for low confidence.
+      const getConfidenceColor = (confidence) => {
+        if (confidence >= 0.7) return 'text-green-400';
+        if (confidence >= 0.5) return 'text-yellow-400';
+        return 'text-red-400';
+      };
+    
     return <>
         <div className="flex-1 overflow-y-auto px-6 py-6 space-y-6">
             {newConversation ? (<div className="flex justify-center items-center h-full">

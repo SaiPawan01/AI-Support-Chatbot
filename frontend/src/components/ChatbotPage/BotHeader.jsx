@@ -1,11 +1,15 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { Menu, Trash2} from 'lucide-react'
 
 import Modal from './Modal';
 import { escalateToAgent } from '../../api/bot.api.js';
 import { deleteConversation } from '../../api/bot.api.js';
 
-function BotHeader({setShowSettings, setSidebarOpen, showSettings, activeConversation, setActiveConversation, setConversations, escalationStatus, setEscalationStatus, setMessages}) {
+import { ChatbotContext } from '../../context/ChatbotContext.jsx';
+
+
+function BotHeader() {
+    const {setShowSettings, setSidebarOpen, showSettings, activeConversation, setActiveConversation, setConversations, escalationStatus, setEscalationStatus, setMessages} = useContext(ChatbotContext);
     const [modalState, setModalState] = useState(false);
     const [convEscalationModalStatus, setConvEscalationModalStatus] = useState(false);
 

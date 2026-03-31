@@ -8,14 +8,11 @@ from django.db import IntegrityError
 from rest_framework.permissions import IsAuthenticated
 from django.contrib.auth import authenticate
 from rest_framework_simplejwt.exceptions import TokenError
-
 from rest_framework_simplejwt.tokens import RefreshToken
-
 from .serializers import UserSerializer, LoginSerializer
 import random
 from .utils.otp_email_service import send_otp
 from .utils.redis_cache import store_otp, verify_otp
-
 from .models import User
 
 
@@ -172,10 +169,7 @@ class EmailVerificationView(APIView):
             user_exists = User.objects.filter(email=email).exists()
 
             if user_exists:
-                return Response(
-                    {"success": False, "message": "Email already registered"},
-                    status=status.HTTP_400_BAD_REQUEST
-                    )
+                return Response({"success": False, "message": "Email already registered"})
 
 
             otp = random.randint(100000, 999999)
@@ -224,7 +218,7 @@ class OTPVerificationView(APIView):
             if not email or not otp:
                 return Response(
                     {"success": False, "message": "Email and OTP are required"},
-                    status=status.HTTP_400_BAD_REQUEST
+                    status=status.HTTP_409_CONFLICT
                 )
 
             is_valid, error_message = verify_otp(email, otp)
