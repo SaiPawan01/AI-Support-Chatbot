@@ -1,6 +1,10 @@
 from django.core.cache import cache
 
 def store_otp(email, otp):
+    # previous_otp = cache.get(f"otp:{email}")
+    # if(previous_otp):
+    #     cache.delete(f"otp:{email}")
+
     cache_key = f"otp:{email}"
     cache.set(cache_key, otp, timeout=300)
 

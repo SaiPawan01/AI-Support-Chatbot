@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Mail, Lock, User, ArrowRight, Eye, EyeOff, Code } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { registerUser, loginUser, sendOtp, verifyOtp } from '../../api/auth.api.js';
 
 export default function Form({ isLogin, setIsLogin, formData, setFormData, errors, setErrors }) {
@@ -384,12 +384,12 @@ export default function Form({ isLogin, setIsLogin, formData, setFormData, error
     {/* Forgot Password Link (Login only) */}
     {isLogin && (
       <div className="flex justify-end">
-        <a
-          href="#"
+        <Link
+          to="/forgot-password"
           className="text-sm text-blue-400 hover:text-blue-300 transition"
         >
           Forgot password?
-        </a>
+        </Link>
       </div>
     )}
 

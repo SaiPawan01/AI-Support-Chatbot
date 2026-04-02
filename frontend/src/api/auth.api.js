@@ -40,3 +40,16 @@ export const sendOtp = (email) => {
 export const verifyOtp = (email, otp) => {
     return api.post("api/verify-otp/", { email, otp });
 }
+
+
+export const sendResetPasswordOtp = (email) => {
+    return api.post("api/reset-password-otp/",{ email});
+}
+
+export const verifyResetPasswordOtp = (email, otp) => {
+    return api.post("api/reset-password-verify-otp/", { email, otp });
+}
+
+export const resetPassword = (email, new_password) => {
+    return api.post("api/reset-password/", { email, new_password });
+}
