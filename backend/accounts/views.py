@@ -73,7 +73,6 @@ class LoginView(APIView):
         except Exception as e:
             return Response(
                 {"success": False, "message": "Invalid email or password", "error": str(e)},
-                status=status.HTTP_401_UNAUTHORIZED,
             )
        
         refresh = RefreshToken.for_user(user)
